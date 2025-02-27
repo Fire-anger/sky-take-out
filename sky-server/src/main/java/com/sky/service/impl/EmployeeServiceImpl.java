@@ -69,7 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /**
-     *
+     * 新增员工
      * @param employeeDTO
      * @return
      */
@@ -113,6 +113,25 @@ public class EmployeeServiceImpl implements EmployeeService {
         long total = page.getTotal();   // 获得总记录数
         List<Employee> records = page.getResult();  // 返回数据
         return new PageResult(total,records);
+    }
+
+    /**
+     * 启用和禁用员工账号
+     * @param status
+     * @param id
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        // update employee set status = ? where id = ?
+        // 为了通用性，我们在这里创建一个实体类，以后我们更新数据时，就可以调用这个动态的mapper
+
+/*        Employee employee = new Employee();
+        employee.setStatus(status);
+        employee.setId(id);*/
+
+        // 利用builder来创建一个新对象
+        Employee employee = Employee.builder().status(status).id(id).build();
+        employeeMapper.update(employee);
     }
 
 }

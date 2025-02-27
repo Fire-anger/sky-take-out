@@ -96,13 +96,28 @@ public class EmployeeController {
      */
     @GetMapping("/page")
     @ApiOperation("员工分页查询")
-    // 由于前端传过来的数据不是json格式的，因此不用加@RequestBody注解
+    // 由于前端传过来的数据不是json格式的而是Query参数，因此不用加@RequestBody注解
     public Result<PageResult> page(EmployeePageQueryDTO employeePageQueryDTO){
         log.info("员工分页查询，参数为：{}",employeePageQueryDTO);
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
     }
 
+    /**
+     * 启用和禁用员工账号
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用和禁用员工账号")
+    // 此处status为路径参数，需要加上@PathVariable注解  id是Query参数，不是json格式的，因此可以不用加@RequestBody注解
+    // 由于参数中的status和路径中的一致，因此不需要在@PathVariable("status") 注解后面指定了
+    public Result startOrStop(@PathVariable Integer status,Long id){
+        log.info("启用和禁用员工账号：{},{}",status,id);
+        employeeService.startOrStop(status,id);
+        return Result.success();
+    }
 
 
 }
