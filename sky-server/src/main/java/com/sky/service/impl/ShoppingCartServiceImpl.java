@@ -72,6 +72,63 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             shoppingCart.setCreateTime(LocalDateTime.now());
             shoppingCartMapper.insert(shoppingCart);
         }
+    }
+
+    /**
+     * 查看购物车
+     * @return
+     */
+    @Override
+    public List<ShoppingCart> showShoppingCart() {
+        // 获取到当前微信用户的id
+        Long userId = BaseContext.getCurrentId();
+        ShoppingCart shoppingCart = ShoppingCart.builder()
+                .userId(userId)
+                .build();
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
+        return list;
+    }
+
+    /**
+     * 清空购物车
+     */
+    @Override
+    public void cleanShoppingCart() {
+        Long userId = BaseContext.getCurrentId();
+        ShoppingCart shoppingCart = ShoppingCart.builder()
+                .userId(userId)
+                .build();
+        shoppingCartMapper.delete(shoppingCart);
+    }
+
+    /**
+     * 删除购物车中的一个商品
+     * @param shoppingCartDTO
+     */
+    @Override
+    public void subShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+        // 获取删除的商品的数量
+        ShoppingCart shoppingCart = new ShoppingCart();
+        BeanUtils.copyProperties(shoppingCartDTO,shoppingCart);
+
+        // 获取用户id
+        shoppingCart.setUserId(BaseContext.getCurrentId());
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);  // 查询到的只有一条数据
+
+        if(list != null && list.size() > 0){
+            shoppingCart = list.get(0);
+
+            Integer number = shoppingCart.getNumber();
+            // 若数量大于1，则直接将数量减一
+            if(number > 1){
+                shoppingCart.setNumber(shoppingCart.getNumber() - 1);
+                shoppingCartMapper.updateNumberById(shoppingCart);
+            }else{
+                // 若数量等于1，则直接在购物车表中删除该条数据
+                shoppingCartMapper.delete(shoppingCart);  // 这里我是写成了一个动态的SQL(和清空购物车调用同一个mapper接口)和老师的不一样
+            }
+        }
+
 
     }
 }
