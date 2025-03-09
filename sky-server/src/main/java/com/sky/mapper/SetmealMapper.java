@@ -5,8 +5,11 @@ import com.sky.annotation.AutoFill;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.enumeration.OperationType;
+import com.sky.vo.DishItemVO;
 import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface SetmealMapper {
@@ -54,4 +57,19 @@ public interface SetmealMapper {
     @AutoFill(value = OperationType.UPDATE)
     void update(Setmeal setmeal);
 
+    /**
+     * 动态条件查询套餐
+     * @param setmeal
+     * @return
+     */
+    List<Setmeal> list(Setmeal setmeal);
+
+    /**
+     * 根据套餐id查询菜品选项
+     * @param setmealId
+     * @return
+     */
+    @Select("select d.description,d.image,sd.name,sd.copies " +
+            "from setmeal_dish sd left join dish d on d.id = sd.dish_id where sd.setmeal_id = #{setmealId}")
+    List<DishItemVO> getDishItemBySetmealId(Long setmealId);
 }
