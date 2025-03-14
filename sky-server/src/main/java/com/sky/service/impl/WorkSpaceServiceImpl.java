@@ -39,9 +39,9 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
      * @return
      */
     @Override
-    public BusinessDataVO getBusinessData() {
-        LocalDateTime begin = LocalDateTime.now().with(LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.now().with(LocalTime.MAX);
+    public BusinessDataVO getBusinessData(LocalDateTime begin,LocalDateTime end) {
+        // LocalDateTime begin = LocalDateTime.now().with(LocalTime.MIN);
+        // LocalDateTime end = LocalDateTime.now().with(LocalTime.MAX);
 
         Map map = new HashMap();
         map.put("begin",begin);
